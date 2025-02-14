@@ -1,7 +1,7 @@
-import logo from "@/assets/logo.png";
+// import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { auth } from "@clerk/nextjs";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { StickyNote } from "lucide-react";

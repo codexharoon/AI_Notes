@@ -1,6 +1,6 @@
 "use client";
 
-import logo from "@/assets/logo.png";
+// import logo from "@/assets/logo.png";
 import AddEditNoteDialog from "@/components/AddEditNoteDialog";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Plus, StickyNote } from "lucide-react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
