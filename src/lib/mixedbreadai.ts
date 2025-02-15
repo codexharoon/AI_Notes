@@ -23,7 +23,5 @@ export async function generateEmbeddings(text: string) {
 
     const embeddings = res.data[0].embedding;
 
-    // console.log(embeddings);
-
     return embeddings;
 }
