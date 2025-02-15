@@ -17,7 +17,7 @@ export default function Home() {
         {/* <Image src={logo} alt="AI Notes logo" width={100} height={100} /> */}
         <StickyNote className="h-16 w-16" />
         <span className="text-4xl font-extrabold tracking-tight lg:text-5xl">
-          AI Notes
+          Code x AI-Notes
         </span>
       </div>
       <p className="max-w-prose text-center">

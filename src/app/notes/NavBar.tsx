@@ -25,7 +25,7 @@ export default function NavBar() {
           <Link href="/notes" className="flex items-center gap-1">
             {/* <Image src={logo} alt="FlowBrain logo" width={40} height={40} /> */}
             <StickyNote className="mr-2 h-8 w-8" />
-            <span className="text-xl font-bold">AI Notes</span>
+            <span className="text-xl font-bold">Code x AI-Notes</span>
           </Link>
           <div className="flex items-center gap-2">
             <UserButton

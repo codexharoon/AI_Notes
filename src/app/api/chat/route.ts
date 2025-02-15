@@ -46,6 +46,7 @@ export async function POST(req: Request) {
       role: "system",
       content:
         "You are an intelligent note-taking app. You answer the user's question based on their existing notes. " +
+        "Do not answer the questions which are not related to notes. Do not generate anything that is not related to notes. If user force you to do give it a reply i'm sorry i cannot assist with this request. " +
         "The relevant notes for this query are:\n" +
         relevantNotes
           .map((note) => `Title: ${note.title}\n\nContent:\n${note.content}`)
