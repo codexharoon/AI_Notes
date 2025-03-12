@@ -2,11 +2,12 @@ import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { Message } from "ai";
 import { useChat } from "ai/react";
-import { Bot, Trash, XCircle, Mic, MicOff } from "lucide-react";
+import { Bot, Trash, XCircle } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { VoiceInput } from "./VoiceInput";
 
 interface AIChatBoxProps {
   open: boolean;
@@ -27,8 +28,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -42,58 +42,12 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
     }
   }, [open]);
 
-  useEffect(() => {
-    // Initialize speech recognition
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognitionInstance = new SpeechRecognitionAPI();
-      recognitionInstance.continuous = true;
-      recognitionInstance.interimResults = true;
-      
-      recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
-        const transcript = Array.from(event.results)
-          .map((result: SpeechRecognitionResult) => result[0].transcript)
-          .join('');
-        
-        setInput(transcript);
-      };
-      
-      recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error', event.error);
-        setIsRecording(false);
-      };
-  
-      setRecognition(recognitionInstance);
-    }
-
-    return () => {
-      if (recognition) {
-        recognition.stop();
-      }
-    };
-  }, [setInput]);
-
-  const toggleRecording = () => {
-    if (!recognition) return;
-
-    if (isRecording) {
-      recognition.stop();
-    } else {
-      recognition.start();
-    }
-    setIsRecording(!isRecording);
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(transcript);
   };
 
-  // Create a wrapper for handleSubmit to also stop recording if active
-  const handleSubmitWithRecording = (e: React.FormEvent<HTMLFormElement>) => {
-    // If recording is active, stop it
-    if (isRecording && recognition) {
-      recognition.stop();
-      setIsRecording(false);
-    }
-    
-    // Call the original handleSubmit
-    handleSubmit(e);
+  const submitForm = () => {
+    formRef.current?.requestSubmit();
   };
 
   const lastMessageIsUser = messages[messages.length - 1]?.role === "user";
@@ -136,7 +90,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
             </div>
           )}
         </div>
-        <form onSubmit={handleSubmitWithRecording} className="m-3 flex gap-1">
+        <form ref={formRef} onSubmit={handleSubmit} className="m-3 flex gap-1">
           <Button
             title="Clear chat"
             variant="outline"
@@ -153,16 +107,12 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
             placeholder="Say something..."
             ref={inputRef}
           />
-          <Button 
-            type="button"
-            variant={isRecording ? "destructive" : "outline"}
-            size="icon"
+          <VoiceInput 
+            onTranscript={handleVoiceTranscript} 
+            currentInput={input} 
+            onSubmit={submitForm}
             className="shrink-0"
-            onClick={toggleRecording}
-            title={isRecording ? "Stop recording" : "Start voice input"}
-          >
-            {isRecording ? <MicOff /> : <Mic />}
-          </Button>
+          />
           <Button type="submit">Send</Button>
         </form>
       </div>
