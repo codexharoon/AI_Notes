@@ -1,6 +1,5 @@
 import prisma from "@/lib/db/prisma";
-import { generateEmbeddings } from "@/lib/mixedbreadai";
-import { pineconeIndex } from "@/lib/pinecone";
+import { pineconeIndex,generateEmbeddings } from "@/lib/pinecone";
 import {
   createNoteSchema,
   deleteNoteSchema,
@@ -157,5 +156,10 @@ async function getEmbeddingsForNote(title : string , content : string|undefined)
   const text = title + "\n\n" + (content ?? "");
 
   const embeddings = await generateEmbeddings(text);
-  return Array.isArray(embeddings) ? embeddings : Array.from(Object.values(embeddings));
+
+  if (!embeddings) {
+    throw new Error("Failed to generate embeddings");
+  }
+
+  return embeddings;
 }

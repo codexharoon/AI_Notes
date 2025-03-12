@@ -1,6 +1,6 @@
 import { pineconeIndex } from "@/lib/pinecone";
 import prisma from "@/lib/db/prisma";
-import { generateEmbeddings } from "@/lib/mixedbreadai";
+import { generateEmbeddings } from "@/lib/pinecone";
 import { auth } from "@clerk/nextjs";
 import { StreamingTextResponse } from "ai";
 import {groq} from "@/lib/groqai";
@@ -28,8 +28,12 @@ export async function POST(req: Request) {
       messagesTruncated.map((message) => message.content).join("\n")
     );
 
+    if(!embeddings) {
+      return Response.json({ error: "Failed to generate embeddings" }, { status: 500 });
+    }
+
     const vectorQueryResponse = await pineconeIndex.query({
-      vector: Array.isArray(embeddings) ? embeddings : Array.from(Object.values(embeddings)),
+      vector: embeddings,
       topK: 4,
       filter: { userId },
     });

@@ -12,3 +12,21 @@ export const pinecone = new Pinecone({
 
 
 export const pineconeIndex = pinecone.index("ai-notes");
+
+export async function generateEmbeddings(text: string) {
+    const model = 'multilingual-e5-large';
+
+    const embeddingResult = await pinecone.inference.embed(
+        model,
+        [text],
+        {
+          inputType: 'passage',
+        }
+    );
+   
+    if(embeddingResult[0].values){
+        return embeddingResult[0].values;
+    }
+    
+    return null;
+}

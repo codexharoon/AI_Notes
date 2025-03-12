@@ -23,5 +23,5 @@ export async function generateEmbeddings(text: string) {
 
     const embeddings = res.data[0].embedding;
 
-    return embeddings;
+    return Array.isArray(embeddings) ? embeddings : Array.from(Object.values(embeddings));
 }
